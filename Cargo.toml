@@ -1,0 +1,10 @@
+[package]
+name = "stalewall-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ureq = { version = "2.12.1", features = ["json"]}
+serde_json = "1.0.133"
+serde = { version = "1.0.216", features = ["derive"] }
+wallpaper = "3.2.0"
