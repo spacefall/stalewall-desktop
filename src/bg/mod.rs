@@ -1,9 +1,10 @@
-// windows
 #[cfg(windows)]
 mod windows;
 
 #[cfg(windows)]
-pub use windows::*;
+use futures_lite::future::block_on;
+
+use anyhow::Result;
 
 pub enum Mode {
     Center,
@@ -12,4 +13,15 @@ pub enum Mode {
     Span,
     Stretch,
     Tile,
+}
+
+pub enum SetMode {
+    Desktop,
+    Lockscreen,
+    Both,
+}
+
+#[cfg(windows)]
+pub fn set(path: &str, mode: Mode, set_mode: SetMode) -> Result<()> {
+    block_on(windows::set_all(path, mode, set_mode))
 }
