@@ -1,0 +1,11 @@
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+codegen-units = 1
+
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+    # avoid api-ms-win-core-winrt-error-l1-1-0.dll
+    "--cfg=windows_slim_errors",
+]
