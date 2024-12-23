@@ -22,7 +22,7 @@ struct Cli {
     #[arg(short)]
     providers: Option<String>,
 
-    /// Change api url, default is https://stalewall.spacefell.workers.dev
+    /// Change api url, default is <https://stalewall.spacefell.workers.dev>
     #[arg(short)]
     url: Option<String>,
 
@@ -49,19 +49,19 @@ fn main() {
     if cli.width.is_some() && cli.height.is_some() {
         let w = cli.width.unwrap();
         let h = cli.height.unwrap();
-        api_request.push_str(&format!("?res={}x{}", w, h));
+        api_request.push_str(&format!("?res={w}x{h}"));
     }
 
     if let Some(p) = cli.providers.as_deref() {
-        api_request.push(if api_request.ends_with("/") { '?' } else { '&' });
-        api_request.push_str(&format!("prov={}", p));
+        api_request.push(if api_request.ends_with('/') { '?' } else { '&' });
+        api_request.push_str(&format!("prov={p}"));
     }
 
     let mode = cli.mode.unwrap_or(Mode::Crop);
 
     // Make the request
     let json = net::get_api_json(api_request.as_str()).unwrap_or_else(|err| {
-        eprintln!("{}", err);
+        eprintln!("{err}");
         std::process::exit(1);
     });
 
@@ -74,7 +74,7 @@ fn main() {
     let temp_image_path = env::temp_dir().join("stalewall_current.jpg");
     let save_path = temp_image_path.to_str().unwrap();
     net::get_image(json.url.as_str(), save_path).unwrap_or_else(|err| {
-        eprintln!("{}", err);
+        eprintln!("{err}");
         std::process::exit(1);
     });
 

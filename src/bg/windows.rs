@@ -12,7 +12,7 @@ use windows::{
 };
 
 /// Sets the desktop wallpaper from a file and/or sets the wallpaper position.
-pub(crate) unsafe fn set_wallpaper(path: &str, mode: Mode) -> Result<()> {
+pub(crate) unsafe fn set_wallpaper(path: &str, mode: &Mode) -> Result<()> {
     CoInitialize(None).unwrap();
     let idw: IDesktopWallpaper = CoCreateInstance(&DesktopWallpaper, None, CLSCTX_ALL)
         .expect("Couldn't initialize IDesktopWallpaper");
@@ -35,17 +35,17 @@ pub(crate) async fn set_lockscreen(path: &str) -> Result<()> {
     let file = StorageFile::GetFileFromPathAsync(&HSTRING::from(path))?.await?;
     let stream = file.OpenAsync(FileAccessMode::Read)?.await?;
     LockScreen::SetImageStreamAsync(&stream)?.await?;
-    Ok(())
+    Ok(()) 
 }
 
 // Sets both
 pub(crate) async fn set_all(path: &str, mode: Mode, set_mode: SetMode) -> Result<()> {
     match set_mode {
-        SetMode::Desktop => unsafe { set_wallpaper(path, mode) },
+        SetMode::Desktop => unsafe { set_wallpaper(path, &mode) },
         SetMode::Lockscreen => set_lockscreen(path).await,
         SetMode::Both => {
             let lock = set_lockscreen(path);
-            unsafe { set_wallpaper(path, mode)? };
+            unsafe { set_wallpaper(path, &mode)? };
             lock.await
         }
     }
