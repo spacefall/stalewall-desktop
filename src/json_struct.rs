@@ -10,7 +10,7 @@ pub struct Stalewall {
 #[derive(Deserialize, Clone)]
 pub struct Info {
     pub desc: Option<Description>,
-    pub credits: Credits
+    pub credits: Credits,
 }
 
 #[derive(Deserialize, Clone)]
@@ -23,7 +23,7 @@ pub struct Description {
 #[derive(Deserialize, Clone)]
 pub struct Credits {
     pub copyright: String,
-    pub urls: Option<Urls>
+    pub urls: Option<Urls>,
 }
 
 #[derive(Deserialize, Clone)]
