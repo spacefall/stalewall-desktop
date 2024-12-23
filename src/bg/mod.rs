@@ -27,3 +27,13 @@ pub enum SetMode {
 pub fn set(path: &str, mode: Mode, set_mode: SetMode) -> Result<()> {
     block_on(windows::set_all(path, mode, set_mode))
 }
+
+#[cfg(windows)]
+pub fn supported() -> bool {
+    true
+}
+
+#[cfg(not(windows))]
+pub fn supported() -> bool {
+    false
+}
