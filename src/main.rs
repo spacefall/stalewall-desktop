@@ -1,4 +1,4 @@
-use crate::bg::{Mode, SetMode};
+use crate::bg::{Mode, SetMode, set};
 use crate::json_struct::Stalewall;
 use clap::Parser;
 use std::env;
@@ -10,17 +10,29 @@ mod net;
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
-    /// Sets request width
+    /// Sets width
     #[arg(requires = "height")]
     width: Option<u16>,
 
-    /// Sets request height
+    /// Sets height
     #[arg(requires = "width")]
     height: Option<u16>,
 
-    /// Sets request providers
+    /// Sets providers to use, see stalewall readme for more info
     #[arg(short)]
     providers: Option<String>,
+    
+    /// Change api url, default is https://stalewall.spacefell.workers.dev
+    #[arg(short)]
+    url: Option<String>,
+    
+    /// Selects where to apply wallpaper
+    #[arg(short, value_name = "MODE")]
+    apply: SetMode,
+    
+    /// Change wallpaper mode 
+    #[arg(short)]
+    mode: Option<Mode>,
 }
 
 const API_URL: &str = "https://stalewall.spacefell.workers.dev";
@@ -28,21 +40,21 @@ const API_URL: &str = "https://stalewall.spacefell.workers.dev";
 fn main() {
     // Parse CLI arguments
     let cli = Cli::parse();
-    let mut params: String = String::new();
-
+    let mut api_request = cli.url.unwrap_or(format!("{API_URL}/").to_string());
+    
     if cli.width.is_some() && cli.height.is_some() {
         let w = cli.width.unwrap();
         let h = cli.height.unwrap();
-        params = format!("?res={}x{}", w, h);
+        api_request.push_str(&format!("?res={}x{}", w, h));
     }
 
     if let Some(p) = cli.providers.as_deref() {
-        let separator = if params.is_empty() { "?" } else { "&" };
-        params = format!("{}{}prov={}", params, separator, p);
+        api_request.push(if api_request.ends_with("/") { '?' } else { '&' });
+        api_request.push_str(&format!("prov={}", p));
     }
 
     // Make the request
-    let json = net::get_api_json(format!("{API_URL}/{params}").as_str()).expect("Wrong arguments passed, api request failed");
+    let json = net::get_api_json(api_request.as_str()).expect("Wrong arguments passed, api request failed");
 
     // Print the response
     // I'm sure this is memory efficient
@@ -56,7 +68,8 @@ fn main() {
 
     // Set wallpaper
     println!("Setting image as wallpaper");
-    bg::set(save_path, Mode::Crop, SetMode::Both).unwrap()
+    let mode = cli.mode.unwrap_or(Mode::Crop);
+    set(save_path, mode, cli.apply).unwrap()
 }
 
 /// Prints a Stalewall struct, it's here just to make the code cleaner (slightly) 

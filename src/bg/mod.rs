@@ -6,6 +6,7 @@ use futures_lite::future::block_on;
 
 use anyhow::Result;
 
+#[derive(clap::ValueEnum, Clone)]
 pub enum Mode {
     Center,
     Crop,
@@ -15,6 +16,7 @@ pub enum Mode {
     Tile,
 }
 
+#[derive(clap::ValueEnum, Clone)]
 pub enum SetMode {
     Desktop,
     Lockscreen,
