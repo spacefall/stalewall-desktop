@@ -39,7 +39,7 @@ const API_URL: &str = "https://stalewall.spacefell.workers.dev";
 
 fn main() {
     if !bg::supported() {
-        eprintln!("Your OS is not supported, sorry!");
+        eprintln!("Your configuration is not supported, sorry!");
         std::process::exit(1);
     }
     // Parse CLI arguments
