@@ -1,5 +1,6 @@
+#![cfg_attr(feature = "silent", windows_subsystem = "windows")]
+
 use crate::bg::{set, Mode, SetMode};
-use crate::json_struct::Stalewall;
 use clap::Parser;
 
 mod bg;
@@ -66,9 +67,11 @@ fn main() {
 
     // Print the response
     // I'm sure this is memory efficient
+    #[cfg(not(feature = "silent"))]
     print_resp(json.clone());
 
     // Download image to temp files
+    #[cfg(not(feature = "silent"))]
     println!("Downloading image...");
     let temp_image_path = dirs::cache_dir()
         .expect("Couldn't obtain cache dir path")
@@ -81,11 +84,13 @@ fn main() {
     });
 
     // Set wallpaper
+    #[cfg(not(feature = "silent"))]
     println!("Setting image as wallpaper");
     set(save_path, mode, cli.apply).expect("Couldn't set the wallpaper");
 }
 
 /// Prints a Stalewall struct, it's here just to make the code cleaner (slightly)
+#[cfg(not(feature = "silent"))]
 fn print_resp(json: Stalewall) {
     println!("Got response:");
     println!("Provider: {}", json.provider);

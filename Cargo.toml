@@ -3,6 +3,9 @@ name = "stalewall-desktop"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+silent = []
+
 [dependencies]
 ureq = { version = "2.12", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
