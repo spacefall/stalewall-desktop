@@ -1,7 +1,6 @@
 use crate::bg::{set, Mode, SetMode};
 use crate::json_struct::Stalewall;
 use clap::Parser;
-use std::env;
 
 mod bg;
 mod json_struct;
@@ -71,7 +70,10 @@ fn main() {
 
     // Download image to temp files
     println!("Downloading image...");
-    let temp_image_path = env::temp_dir().join("stalewall_current.jpg");
+    let temp_image_path = dirs::cache_dir()
+        .expect("Couldn't obtain cache dir path")
+        .join("stalewall_current.jpg");
+    //let temp_image_path = env::temp_dir().join("stalewall_current.jpg");
     let save_path = temp_image_path.to_str().unwrap();
     net::get_image(json.url.as_str(), save_path).unwrap_or_else(|err| {
         eprintln!("{err}");
